@@ -21,7 +21,7 @@
     />
     <!-- 页面导航 -->
     
-    <van-row class="dhfather">
+    <!-- <van-row class="dhfather">
       <van-col span="12" style="text-align:center" @click="toDisease">
         <van-icon name="add-o" style="font-size:18px;" color="#504DE3" /> <span style="font-size:19px;"> <b style="color:#333">找疾病</b> </span> <br>
         <span class="subTitleColor">找准对症，便捷就医</span> 
@@ -30,7 +30,7 @@
         <van-icon name="manager-o" style="font-size:18px;" color="#504DE3" /> <span style="font-size:19px;"> <b style="color:#333">去挂号</b> </span> <br>
         <span class="subTitleColor">快速找到对症专家</span> 
       </van-col>
-    </van-row>
+    </van-row> -->
     <!-- <mu-divider></mu-divider> -->
     <!-- 名义列表 -->
 
@@ -59,7 +59,7 @@ export default {
   },
   data(){
     return {
-      tianqi:'此平台可帮助您快速预约挂号，祝您生活愉快',
+      tianqi:'喜欢做的事不要总说以后， 来日并不方长； 今天的拥抱不要留给明天， 后会可能无期。',
       key:'',
       value1:0,
       // 列表json数组
@@ -77,8 +77,8 @@ export default {
       SwiperImg: [
         // "https://kano.guahao.cn/Ucq255224161?resize=800x350",
         // "https://kano.guahao.cn/X4c264868021?resize=800x350",
-        "https://www.qiangssvip.com/usr/uploads/2020/04/1933520351.png",
-        "https://www.qiangssvip.com/usr/uploads/2020/04/2146004560.png"
+        "http://218.28.47.6:8090/seeyon/fileUpload.do?method=showRTE&type=image&fileId=-778190809597982369",
+        // "https://www.qiangssvip.com/usr/uploads/2020/04/2146004560.png"
         
       ],
 

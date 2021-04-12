@@ -5,7 +5,7 @@
     <mu-load-more :loading="loading" :refreshing="refreshing" @load="load" v-if="listData.length > 0">
       <div v-for="(item,index) in listData" :key="index">
           <!-- <mu-list-item avatar :ripple="false" button v-on:click="toYuYue(item.id)"> -->
-          <mu-list-item avatar :ripple="false" button :to="'/doctor/' + item.dId">
+          <mu-list-item avatar :ripple="false" button :to="'/doctor/' + item.id">
               <!-- 列表项目左侧头像 -->
               <!-- <mu-list-item-action>
                 <mu-avatar>
@@ -14,11 +14,11 @@
               </mu-list-item-action> -->
               <!-- 列表项目内容 -->
               <mu-list-item-content>
-                <mu-list-item-title>{{item.title}} &nbsp;<span style="font-size:14px;">{{item.profile}}</span> </mu-list-item-title>
+                <mu-list-item-title><span style="font-size:16px;font-weight:800;">{{item.title}}</span> </mu-list-item-title>
                 <mu-list-item-sub-title>
-                  <span style="color: rgba(0, 0, 0, .87)">坐诊：</span> <span class="subTitleColor">这是一段描述</span> 
+                  <span style="color: rgba(0, 0, 0, .87)">描述：</span> <span class="subTitleColor">{{item.profile}}</span> 
                   <br>
-                  <span style="color: rgba(0, 0, 0, .87)">简介：</span> <span class="subTitleColor">这还是一段描述</span>
+                  <span style="color: rgba(0, 0, 0, .87)">开始时间：</span> <span class="subTitleColor">{{item.startDate}}</span>
                   <!-- <br>
                   <van-icon name="friends" color="#1989fabf" style="padding-top:2px;" /> <span class="subTitleColor" style="font-size:12px;vertical-align:top;padding-top:-2px;">{{item.dLimitsNumber}}人预约</span>  -->
                 </mu-list-item-sub-title>
