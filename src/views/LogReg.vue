@@ -5,7 +5,8 @@
     <!-- 居中 -->
     <van-row type="flex" justify="center" >
       <van-col span="6" style="margin-top:20%;">
-        <img alt="logo" src="../assets/logopro.png" style="width:100%;">
+        <!-- <img alt="logo" src="../assets/logopro.png" style="width:100%;"> -->
+        <img alt="logo" src="../assets/logo.png" style="width:100%;">
       </van-col>
     </van-row>
     <span style="color:#ccc; line-height:40px;">瑞华投票助手</span>

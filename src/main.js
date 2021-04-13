@@ -7,7 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import Global from './components/Global'
 
 
-import mdui from 'mdui'
+// import mdui from 'mdui'
 
 // 引入vant组件
 import Vant from 'vant';

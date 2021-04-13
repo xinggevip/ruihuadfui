@@ -5,7 +5,7 @@
     <mu-load-more :loading="loading" :refreshing="refreshing" @load="load" v-if="listData.length > 0">
       <div v-for="(item,index) in listData" :key="index">
           <!-- <mu-list-item avatar :ripple="false" button v-on:click="toYuYue(item.id)"> -->
-          <mu-list-item avatar :ripple="false" button :to="'/doctor/' + item.id">
+          <mu-list-item avatar :ripple="false" button :to="'/activate/' + item.id">
               <!-- 列表项目左侧头像 -->
               <!-- <mu-list-item-action>
                 <mu-avatar>

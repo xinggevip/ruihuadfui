@@ -6,8 +6,8 @@
 
     <van-tabbar v-model="active">
       <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
-      <van-tabbar-item icon="orders-o" to="/order">挂号单</van-tabbar-item>
-      <van-tabbar-item icon="notes-o" to="/report">报告</van-tabbar-item>
+      <van-tabbar-item icon="orders-o" to="/order">菜单2</van-tabbar-item>
+      <van-tabbar-item icon="notes-o" to="/report">菜单3</van-tabbar-item>
       <van-tabbar-item icon="contact" to="/profile">我的</van-tabbar-item>
       
     </van-tabbar>

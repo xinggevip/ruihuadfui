@@ -7,7 +7,7 @@ import Report from '../components/Report.vue'
 import Profile from '../components/Profile.vue'
 import AllDoctor from '../components/AllDoctor.vue'
 import Disease from '../components/Disease.vue'
-import Doctor from '../components/Doctor.vue'
+import Activate from '../components/Activate.vue'
 import LogReg from '../views/LogReg.vue'
 import Log from '../views/Log.vue'
 import Reg from '../views/Reg.vue'
@@ -16,6 +16,9 @@ import SubmitAppointment from '../components/SubmitAppointment.vue'
 import OrderProfile from '../components/OrderProfile.vue'
 import OrderProfilee from '../components/OrderProfilee.vue'
 import EditProfile from '../views/EditProfile.vue'
+import Player from '../components/Player.vue'
+import Judge from '../components/Judge.vue'
+import Controler from '../components/Controler.vue'
 
 
 Vue.use(VueRouter)
@@ -30,26 +33,17 @@ const routes = [
       {
         path:'/',
         name:'index',
-        component:Index,
-        meta:{
-          requireAuth: false  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:Index
       },
       {
         path:'/order',
         name:'order',
-        component:Order,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:Order
       },
       {
         path:'/report',
         name:'report',
-        component:Report,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:Report
       },
       {
         path:'/profile',
@@ -62,34 +56,37 @@ const routes = [
       {
         path:'/alldoctor/:typeid',
         name:'alldoctor',
-        component:AllDoctor,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:AllDoctor
       },
       {
         path:'/disease',
         name:'disease',
-        component:Disease,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:Disease
       },
       {
-        path:'/doctor/:dId',
-        name:'doctor',
-        component:Doctor,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        path:'/activate/:actid',
+        name:'activate',
+        component:Activate
+      },
+      {
+        path:'/activate/:actid/player/:playerName',
+        name:'player',
+        component:Player
+      },
+      {
+        path:'/activate/:actid/judge/:judgeName',
+        name:'judge',
+        component:Judge
+      },
+      {
+        path:'/activate/:actid/player/:ControlerName',
+        name:'controler',
+        component:Controler
       },
       {
         path:'/choice',
         name:'choice',
-        component:Choice,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:Choice
       },
       {
         path:'/submitappointment',
@@ -102,18 +99,12 @@ const routes = [
       {
         path:'/orderprofile/:rid',
         name:'orderprofile',
-        component:OrderProfile,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:OrderProfile
       },
       {
         path:'/orderprofilee/:rid',
         name:'orderprofilee',
-        component:OrderProfilee,
-        meta:{
-          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
-        }
+        component:OrderProfilee
       }
 
     ]
