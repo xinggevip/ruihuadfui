@@ -2,6 +2,11 @@
   <div class="player">
 
     <h1>选手</h1>
+    <p>环节列表：</p>
+    <ul>
+      <li v-for="(item,index) in items" :key="index">{{item}}</li>
+    </ul>
+
   
 
   </div>
@@ -22,6 +27,7 @@ export default {
   data(){
     return {
       loading:false,
+      items:["环节一","环节二","环节三","环节四"],
       data:[],
       invitationCode:"",
       name:""

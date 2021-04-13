@@ -13,8 +13,8 @@
   </div>
 
   <van-cell-group>
-    <van-field v-model="invitationCode" label="邀请码" placeholder="请输入邀请码" />
-    <van-field v-model="name" label="姓名" placeholder="请输入姓名" />
+    <van-field v-model="invitationCode" required :error-message="errmsg1" label="邀请码" placeholder="请输入邀请码" />
+    <van-field v-model="name" required :error-message="errmsg2" label="姓名" placeholder="请输入姓名" />
   </van-cell-group>
 
   <div style="padding:20px"></div>
@@ -35,7 +35,7 @@
 <script>
 
 export default {
-  name: 'Step',
+  name: 'Activate',
   components: {
   },
   props: {
@@ -46,7 +46,10 @@ export default {
       loading:false,
       data:[],
       invitationCode:"",
-      name:""
+      name:"",
+      errmsg1:"",
+      errmsg2:""
+      
 
     }
   },
@@ -57,6 +60,35 @@ export default {
   },
   methods:{
     onSubmit(){
+      let num = 1;
+      if(this.invitationCode === ""){
+        this.errmsg1 = "请输入邀请码"
+        num = 2
+      };
+
+      
+
+      if(this.name === ""){
+        this.errmsg2 = "请输入姓名"
+        num = 2
+      }
+
+      if(this.invitationCode != ""){
+        this.errmsg1 = ""
+      };
+
+      if(this.name != ""){
+        this.errmsg2 = ""
+      }
+
+      if(num === 2){
+        return;
+      }
+
+
+
+
+
       this.loading = true;
       let params = {
         "invitationCode":this.invitationCode,

@@ -79,7 +79,7 @@ const routes = [
         component:Judge
       },
       {
-        path:'/activate/:actid/player/:ControlerName',
+        path:'/activate/:actid/cntroler/:controlerName',
         name:'controler',
         component:Controler
       },

@@ -1,8 +1,30 @@
 <template>
   <div class="controler">
 
-    <h1>场控</h1>
-  
+    <van-nav-bar
+      title="场控-销售技能大赛"
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+    />
+
+    <div class="father">
+      <p>活动详情：</p>
+      <p>这是一段详情</p>
+    </div>
+    
+    <van-cell is-link title="环节一" @click="show = true" value="选择当前环节"/>
+    <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
+    
+    <van-search v-model="searchKey" placeholder="请输入搜索关键词" /> 
+
+    <div class="father">
+      <van-tabs @click="onClick">
+        <van-tab title="所有人">内容 1</van-tab>
+        <van-tab title="上台人">内容 2</van-tab>
+      </van-tabs>
+    </div>
+
 
   </div>
 </template>
@@ -23,7 +45,12 @@ export default {
       loading:false,
       data:[],
       invitationCode:"",
-      name:""
+      name:"",
+      items:["环节一","环节二","环节三","环节四"],
+      show: false,
+      actions: [{ name: '环节一' }, { name: '环节二' }, { name: '环节三' }],
+      searchKey:""
+      
 
     }
   },
@@ -47,15 +74,27 @@ export default {
         this.loading = false;
       })
     },
-
+    onClick(name, title) {
+      this.$toast(title);
+    },
     // 返回
     onClickLeft(){
       window.history.back(-1);
-    }
+    },
+    onSelect(item) {
+      // 默认情况下点击选项时不会自动收起
+      // 可以通过 close-on-click-action 属性开启自动收起
+      this.show = false;
+      this.$toast(item.name);
+    },
   }
 }
 </script>
 <style scoped lang="less">
+.father{
+  padding: 0px 15px;
+  box-sizing: border-box;
+}
 .chengnuo{
   position: absolute;
   top: 0px;

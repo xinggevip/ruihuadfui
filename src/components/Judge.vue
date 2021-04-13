@@ -1,7 +1,33 @@
 <template>
   <div class="judge">
+    <van-nav-bar
+      title="第一环节"
+      left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+    />
+    <div class="father">
+      <!-- <h3>评委</h3> -->
+      <!-- <p><b>环节列表：</b></p>
+      <ul>
+        <li v-for="(item,index) in items" :key="index">{{item}} <span style="color:red;" v-if="index == 2">&nbsp;&nbsp;&nbsp;&nbsp;☜当前环节</span></li>
+      </ul> -->
+      <p><b>详情:</b></p>
+      <p>这是一段介绍</p>
+      
+    </div>
+    
+    <van-search v-model="searchKey" placeholder="请输入搜索关键词" /> 
+    <div class="father">
+      <van-tabs @click="onClick">
+      <van-tab title="待打分">内容 1</van-tab>
+      <van-tab title="已打分">内容 2</van-tab>
+    </van-tabs>
+    </div>
+    
 
-    <h1>评委</h1>
+    
+
   
 
   </div>
@@ -22,8 +48,10 @@ export default {
     return {
       loading:false,
       data:[],
+      items:["环节一","环节二","环节三","环节四","结束"],
       invitationCode:"",
-      name:""
+      name:"",
+      searchKey:""
 
     }
   },
@@ -47,15 +75,28 @@ export default {
         this.loading = false;
       })
     },
+    onClick(name, title) {
+      this.$toast(title);
+    },
 
     // 返回
     onClickLeft(){
       window.history.back(-1);
-    }
+    },
+
+
+
   }
 }
 </script>
 <style scoped lang="less">
+.judge{
+  // padding: 20px;
+  // box-sizing: border-box;
+  .father{
+    padding: 0px 10px;
+  }
+}
 .chengnuo{
   position: absolute;
   top: 0px;

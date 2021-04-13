@@ -1,7 +1,7 @@
 <template>
   <div class="hello ">
     <!-- 搜索框 -->
-    <van-search placeholder="请输入搜索关键词" @search="onSearch" v-model="value" />
+    <!-- <van-search placeholder="请输入搜索关键词" @search="onSearch" v-model="value" /> -->
     <!-- 轮播图 -->
     <mu-container>
       <mu-row class="swiper">
@@ -15,10 +15,13 @@
       </mu-row>
     </mu-container>
     <!-- 滚动消息 -->
-    <van-notice-bar
+    <div class="gundong">
+      <van-notice-bar
       :text="tianqi"
       left-icon="volume-o"
     />
+    </div>
+    
     <!-- 页面导航 -->
     
     <!-- <van-row class="dhfather">
@@ -112,7 +115,12 @@ export default {
 }
 </script>
 <style scoped lang="less">
+.gundong{
+  // padding:0px 10px;
+  // box-sizing: border-box;
+}
 .swiper {
+    margin-top: 10px;
     width: 100%;
     height: 3.4rem;
     // background-color: red;
