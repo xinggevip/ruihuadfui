@@ -2,7 +2,7 @@
   <div class="controler">
 
     <van-nav-bar
-      title="场控-销售技能大赛"
+      :title="activateTitle"
       left-text="返回"
       left-arrow
       @click-left="onClickLeft"
@@ -10,10 +10,10 @@
 
     <div class="father">
       <p>活动详情：</p>
-      <p>这是一段详情</p>
+      <p>{{activateProfile}}</p>
     </div>
     
-    <van-cell is-link title="环节一" @click="show = true" value="选择当前环节"/>
+    <van-cell is-link :title="currentStepTitle" @click="show = true" value="选择当前环节"/>
     <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
     
     <van-search v-model="searchKey" placeholder="请输入搜索关键词" /> 
@@ -46,18 +46,18 @@ export default {
       data:[],
       invitationCode:"",
       name:"",
-      items:["环节一","环节二","环节三","环节四"],
       show: false,
       actions: [{ name: '环节一' }, { name: '环节二' }, { name: '环节三' }],
-      searchKey:""
+      searchKey:"",
+      currentStepTitle:"",
+      activateTitle:"",
+      activateProfile:""
       
 
     }
   },
   created(){
-    // this.doctor.dId = this.$route.params.dId;
-    // 获取医生
-    // this.fetch();
+    this.fetchData()
   },
   methods:{
     onSubmit(){
@@ -74,6 +74,85 @@ export default {
         this.loading = false;
       })
     },
+    getStepList(){
+      this.loading = true;
+
+      let params = {
+        actid:this.$route.params.actid
+      }
+      this.$postQs("/step/steplist",params).then(response=>{
+        console.log(response);
+        if(response.data.success != true){
+          return ;
+        }
+        let list = response.data.data;
+        let neweList = list.map((item,index,arr)=>{
+          item.name = item.title
+          return item;
+        });
+        this.actions = neweList;
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.loading = false;
+      })
+    },
+    geteCurrentStep(){
+      this.loading = true;
+      let params = {
+        id:this.$route.params.actid
+      }
+      this.$postQs("/step/currentStep",params).then(response=>{
+        if(response.data.success != true){
+          return ;
+        }
+        this.currentStepTitle = response.data.data.title;
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.loading = false;
+      })
+    },
+    getActivate(){
+      this.loading = true;
+      this.$get("/activate/"+this.$route.params.actid).then(response=>{
+        this.activateTitle = "场控 - " + response.data.data.title;
+        this.activateProfile = response.data.data.profile;
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.loading = false;
+      })
+    },
+    fetchData(){
+      this.getStepList();
+      this.geteCurrentStep();
+      this.getActivate();
+      this.getAllPlayer();
+    },
+    getAllPlayer(){
+      this.loading = true;
+      let [params] = {
+        "actId": this.$route.params.actid,
+        "name": this.searchKey,
+        "pageNum": 0,
+        "pageSize": 5000,
+        "stepId": 0
+      }
+        this.$post("/player/getPlayers",params).then(response=>{
+          if(!response.data.success){
+            return ;
+          }
+          console.log(response);
+
+        }).catch(err=>{
+
+        }).finally(()=>{
+
+        })
+
+
+    },
     onClick(name, title) {
       this.$toast(title);
     },
@@ -81,11 +160,33 @@ export default {
     onClickLeft(){
       window.history.back(-1);
     },
+    updateActivate(currentStepId){
+      this.loading = true;
+      let item = {
+        id:this.$route.params.actid,
+        strone:"" + currentStepId
+      }
+      this.$put("/activate",item).then(response=>{
+        if(response.data.success){
+          this.$message.success(response.data.message);
+        }
+        this.geteCurrentStep();
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.loading = false;
+      })
+
+
+    },
     onSelect(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
       this.show = false;
-      this.$toast(item.name);
+      // this.$toast(item.name);
+      // this.$toast(item.id)
+      this.updateActivate(item.id);
+
     },
   }
 }
