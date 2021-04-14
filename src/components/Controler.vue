@@ -16,12 +16,26 @@
     <van-cell is-link :title="currentStepTitle" @click="show = true" value="选择当前环节"/>
     <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
     
-    <van-search v-model="searchKey" placeholder="请输入搜索关键词" /> 
+    <van-search v-model="searchKey" @search="onSearch" placeholder="请输入搜索关键词" /> 
 
     <div class="father">
       <van-tabs @click="onClick">
-        <van-tab title="所有人">内容 1</van-tab>
-        <van-tab title="上台人">内容 2</van-tab>
+        <van-tab title="所有人">
+          <div class="playerItem" v-for="(item,index) in listData" :key="index">
+            <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b></p>
+            <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
+            <van-button v-if="item.strone !== '1'" type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="shangtai(item)">上台</van-button>
+            <van-button v-if="item.strone === '1'" type="info" disabled  size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);">上台</van-button>
+          </div>
+        </van-tab>
+        <van-tab title="上台人">
+          <div class="playerItem" v-for="(item,index) in listDataOn" :key="index">
+            <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b></p>
+            <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
+            <van-button v-if="item.strone === '1'" type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="xiatai(item)">下台</van-button>
+            <van-button v-if="item.strone !== '1'" type="info" disabled  size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);">上台</van-button>
+          </div>
+        </van-tab>
       </van-tabs>
     </div>
 
@@ -49,10 +63,13 @@ export default {
       show: false,
       actions: [{ name: '环节一' }, { name: '环节二' }, { name: '环节三' }],
       searchKey:"",
-      currentStepTitle:"",
-      activateTitle:"",
-      activateProfile:""
-      
+      currentStepTitle:"加载中...",
+      activateTitle:"加载中...",
+      activateProfile:"加载中...",
+      listLoading:false,
+      listData:[],// 所有人
+      listDataOn:[], // 上台人
+      buttonLoading:false
 
     }
   },
@@ -60,6 +77,49 @@ export default {
     this.fetchData()
   },
   methods:{
+    onSearch(){
+      this.getAllPlayer();
+    },
+    shangtai(item){
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+      });
+      let params = {
+        id:item.id,
+        strone:"1"
+      }
+      this.$put("/player",params).then(response=>{
+        if(response.data.success){
+          this.getAllPlayer()
+        }
+
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.$toast.clear()
+      })
+    },
+    xiatai(item){
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+      });
+      let params = {
+        id:item.id,
+        strone:""
+      }
+      this.$put("/player",params).then(response=>{
+        if(response.data.success){
+          this.getAllPlayer()
+        }
+
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.$toast.clear()
+      })
+    },
     onSubmit(){
       this.loading = true;
       let params = {
@@ -132,29 +192,34 @@ export default {
     },
     getAllPlayer(){
       this.loading = true;
-      let [params] = {
+      let params = {
         "actId": this.$route.params.actid,
         "name": this.searchKey,
         "pageNum": 0,
         "pageSize": 5000,
         "stepId": 0
       }
-        this.$post("/player/getPlayers",params).then(response=>{
-          if(!response.data.success){
-            return ;
-          }
-          console.log(response);
-
-        }).catch(err=>{
-
-        }).finally(()=>{
-
+      this.$post("/player/getPlayers",params).then(response=>{
+        if(!response.data.success){
+          return ;
+        }
+        console.log(response.data.data.records);
+        this.listData = response.data.data.records;
+        this.listDataOn = response.data.data.records.filter((item,index,arr)=>{
+          return item.strone == '1';
         })
+        console.log("listdataOn",this.listDataOn);
 
+      }).catch(err=>{
 
+      }).finally(()=>{
+        this.loading = false;
+      })
     },
     onClick(name, title) {
-      this.$toast(title);
+      // this.$toast(title);
+      // this.$toast(name);
+      this.getAllPlayer();
     },
     // 返回
     onClickLeft(){
@@ -192,6 +257,10 @@ export default {
 }
 </script>
 <style scoped lang="less">
+.playerItem{
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
 .father{
   padding: 0px 15px;
   box-sizing: border-box;
