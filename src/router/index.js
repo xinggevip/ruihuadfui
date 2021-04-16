@@ -70,7 +70,7 @@ const routes = [
         component:Activate
       },
       {
-        path:'/activate/:actid/player/:playerName',
+        path:'/activate/:actid/player/:playerid',
         name:'player',
         component:Player
       },
@@ -80,12 +80,12 @@ const routes = [
         component:Judge
       },
       {
-        path:'/activate/:actid/judge/:judgeid/dafen/:playerid',
+        path:'/activate/:actid/judge/:judgeid/player/:playerid',
         name:'dafen',
         component:Dafen
       },
       {
-        path:'/activate/:actid/cntroler/:controlerName',
+        path:'/activate/:actid/cntroler/:controlerid',
         name:'controler',
         component:Controler
       },

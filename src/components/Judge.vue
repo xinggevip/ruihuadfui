@@ -32,6 +32,9 @@
     <div class="father">
       <van-tabs @click="onClick">
         <van-tab title="可打分">
+          <div v-if="kedaList.length === 0">
+            <h3>加载中...</h3>
+          </div>
           <div class="playerItem" v-for="(item,index) in kedaList" :key="item.id">
             <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b></p>
             <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
@@ -209,8 +212,17 @@ export default {
     getYiDa(){
 
     },
-    goDafen(){
-      
+    goDafen(item){
+      // alert(item.id);
+      // alert(this.$route.params.playerid)
+      this.$router.push({
+        name:'dafen',
+        params:{
+          actid:this.$route.params.actid,
+          judgeid:this.$route.params.judgeid,
+          playerid:item.id
+        }
+      });
     },
 
     // 返回

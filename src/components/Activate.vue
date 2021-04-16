@@ -99,15 +99,16 @@ export default {
         if(response.data.success){
           let codeType = response.data.data.codeType;
           let name = response.data.data.name;
+          let userid = response.data.data.userid;
           if(codeType === "1"){
             console.log("转到选手");
-            this.$router.push({name:'player',params:{actid:this.$route.params.actid,playerName:name}});
+            this.$router.push({name:'player',params:{actid:this.$route.params.actid,playerid:userid}});
           }else if(codeType === "2"){
             console.log("转到评委");
-            this.$router.push({name:'judge',params:{actid:this.$route.params.actid,judgeName:name}});
+            this.$router.push({name:'judge',params:{actid:this.$route.params.actid,judgeid:userid}});
           }else if(codeType === "3"){
             console.log("转到场控");
-            this.$router.push({name:'controler',params:{actid:this.$route.params.actid,controlerName:name}});
+            this.$router.push({name:'controler',params:{actid:this.$route.params.actid,controlerid:userid}});
           }else{
             this.$message.error("未知异常");
           }
