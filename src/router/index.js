@@ -19,6 +19,7 @@ import EditProfile from '../views/EditProfile.vue'
 import Player from '../components/Player.vue'
 import Judge from '../components/Judge.vue'
 import Controler from '../components/Controler.vue'
+import Dafen from '../components/Dafen.vue'
 
 
 Vue.use(VueRouter)
@@ -74,9 +75,14 @@ const routes = [
         component:Player
       },
       {
-        path:'/activate/:actid/judge/:judgeName',
+        path:'/activate/:actid/judge/:judgeid',
         name:'judge',
         component:Judge
+      },
+      {
+        path:'/activate/:actid/judge/:judgeid/dafen/:playerid',
+        name:'dafen',
+        component:Dafen
       },
       {
         path:'/activate/:actid/cntroler/:controlerName',

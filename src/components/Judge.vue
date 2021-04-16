@@ -3,11 +3,18 @@
     <van-nav-bar
       :title="title"
       left-text="返回"
+      left-arrow
+      @click-left="onClickLeft"
+    />
+
+    <!-- <van-nav-bar
+      :title="title"
+      left-text="返回"
       right-text="切换环节"
       left-arrow
       @click-left="onClickLeft"
       @click-right="onClickRight"
-    />
+    /> -->
 
     <van-action-sheet v-model="show" :actions="actions" @select="onSelect" />
     <div class="father">
@@ -167,7 +174,7 @@ export default {
       this.$postQs("/step/currentStep",params).then(response=>{
         console.log(response);
         if(response.data.success){
-            this.title = response.data.data.title;
+            this.title = "评委 - " + response.data.data.title;
             this.profile = response.data.data.profile;
         }
       }).catch(err=>{
@@ -189,10 +196,10 @@ export default {
           return ;
         }
         console.log(response.data.data.records);
-        this.kedaList = response.data.data.records;
-        // this.kedaList = response.data.data.records.filter((item,index,arr)=>{
-        //   return item.strone == '1';
-        // })
+        // this.kedaList = response.data.data.records;
+        this.kedaList = response.data.data.records.filter((item,index,arr)=>{
+          return item.strone == '1';
+        })
 
       }).catch(err=>{
 
