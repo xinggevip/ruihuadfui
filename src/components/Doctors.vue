@@ -14,11 +14,11 @@
               </mu-list-item-action> -->
               <!-- 列表项目内容 -->
               <mu-list-item-content>
-                <mu-list-item-title><span style="font-size:16px;font-weight:800;">{{item.title}}</span> </mu-list-item-title>
+                <mu-list-item-title><span style="font-size:16px;font-weight:800;">{{item.title}}</span> <span class="subTitleColor">{{item.strone}}</span> </mu-list-item-title>
                 <mu-list-item-sub-title>
                   <span style="color: rgba(0, 0, 0, .87)">描述：</span> <span class="subTitleColor">{{item.profile}}</span> 
                   <br>
-                  <span style="color: rgba(0, 0, 0, .87)">开始时间：</span> <span class="subTitleColor">{{item.startDate}}</span>
+                  <span style="color: rgba(0, 0, 0, .87)">开始时间：</span> <span class="subTitleColor">{{dateFormat(item.startDate)}}</span>
                   <!-- <br>
                   <van-icon name="friends" color="#1989fabf" style="padding-top:2px;" /> <span class="subTitleColor" style="font-size:12px;vertical-align:top;padding-top:-2px;">{{item.dLimitsNumber}}人预约</span>  -->
                 </mu-list-item-sub-title>
@@ -104,6 +104,18 @@ export default {
             this.showInfo = "无数据"
           }
 
+          this.listData = this.listData.map((item,index,arr)=>{
+            if(item.strone === "0"){
+              item.strone = "未开始"
+            }else if(item.strone === "-1"){
+              item.strone = "已结束"
+            }else {
+              item.strone = "进行中"
+            }
+
+            return item;
+          })
+
           // this.pageInfo.next = response.data.data.pageDoctorList.hasNextPage;
           // console.log(this.listData);
           // console.log(this.pageInfo.next);
@@ -140,6 +152,10 @@ export default {
       this.$router.push({path:'/doctor',query:{dId:this.id}});
 
     },
+    dateFormat(value){
+      return this.$dateUtil.mToDateStr(value,"yyyy-MM-dd")
+
+    }
 
   },
   mounted(){

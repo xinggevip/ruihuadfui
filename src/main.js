@@ -23,10 +23,15 @@ Vue.use(Dialog);
 
 // 导入封装的axios
 import {get,post,postQs,put} from "./utils/api";
+import {strUtil,arrUtil,dateUtil} from "./utils/utils";
 
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$put = put
+
+Vue.prototype.$strUtil = strUtil
+Vue.prototype.$arrUtil = arrUtil
+Vue.prototype.$dateUtil = dateUtil
 // post参数会自动序列化
 Vue.prototype.$postQs = postQs
 Vue.prototype.$global = Global;

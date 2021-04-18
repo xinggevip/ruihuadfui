@@ -35,14 +35,22 @@
           <div v-if="kedaList.length === 0">
             <h3>加载中...</h3>
           </div>
-          <div class="playerItem" v-for="(item,index) in kedaList" :key="item.id">
+          <div class="playerItem" v-for="(item,index) in kedaList" :key="item.index">
             <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b></p>
             <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
-            <van-button type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="goDafen(item)">打分</van-button>
+            <van-button v-if="item.yida != true" type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="goDafen(item)">打分</van-button>
+            <van-button v-else disabled type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="goDafen(item)">打分</van-button>
           </div>
         </van-tab>
         <van-tab title="已打分">
-          
+          <div v-if="kedaList.length === 0">
+            <h3>加载中...</h3>
+          </div>
+          <div class="playerItem" v-for="(item,index) in yidaList" :key="item.index">
+            <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b>&nbsp;&nbsp;&nbsp;<b>{{item.sum_score}}分</b></p>
+            <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
+            <van-button type="info" size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);" @click="goDafenProfile(item)">查看</van-button>
+          </div>
         </van-tab>
       </van-tabs>
     </div>
@@ -147,6 +155,7 @@ export default {
     fetchData(){
       this.getStep();
       this.getKeDa();
+      // this.getYiDa();
       this.getStepList();
     },
     onSubmit(){
@@ -166,6 +175,7 @@ export default {
     onClick(name, title) {
       // this.$toast(title);
       this.getKeDa();
+      // this.getYiDa();
     },
     onSearch(){
       this.getKeDa();
@@ -200,9 +210,38 @@ export default {
         }
         console.log(response.data.data.records);
         // this.kedaList = response.data.data.records;
-        this.kedaList = response.data.data.records.filter((item,index,arr)=>{
+        let kedaList = response.data.data.records.filter((item,index,arr)=>{
           return item.strone == '1';
         })
+
+        let params2 = {
+          actid:  this.$route.params.actid,
+          judgeid:this.$route.params.judgeid,
+          playername: this.searchKey,
+        }
+        // console.log("/player/findYidafenPlayers");
+        this.$postQs("/player/findYidafenPlayers",params2).then(response2=>{
+          
+          console.log("findYidafenPlayers",response2);
+          this.yidaList = response2.data.data
+          kedaList.map((item,index,arr)=>{
+            this.yidaList.forEach((item2, index2, arr2)=>{
+              if(item.id === item2.player_id){
+                item.yida = true;
+              }
+            })
+            return item;
+
+          })
+
+          this.kedaList = kedaList;
+
+        }).catch(err=>{
+
+        }).finally(()=>{
+        })
+
+
 
       }).catch(err=>{
 
@@ -210,7 +249,20 @@ export default {
       })
     },
     getYiDa(){
+      let params = {
+        actid:  this.$route.params.actid,
+        judgeid:this.$route.params.judgeid,
+        playername: this.searchKey,
+      }
+      // console.log("/player/findYidafenPlayers");
+      this.$postQs("/player/findYidafenPlayers",params).then(response=>{
+        
+        console.log("findYidafenPlayers",response);
+        this.yidaList = response.data.data
+      }).catch(err=>{
 
+      }).finally(()=>{
+      })
     },
     goDafen(item){
       // alert(item.id);
