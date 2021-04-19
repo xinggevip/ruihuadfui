@@ -150,7 +150,18 @@ export default {
           item.name = item.title
           return item;
         });
+        neweList.unshift({
+          activateId:this.$route.params.actid,
+          id: 0,
+          name: "未开始"
+        })
+        neweList.push({
+          activateId:this.$route.params.actid,
+          id: -1,
+          name: "已结束"
+        })
         this.actions = neweList;
+
       }).catch(err=>{
 
       }).finally(()=>{
