@@ -116,7 +116,7 @@ export default {
       });
       let params = {
         id:item.id,
-        strone:""
+        strone:"0"
       }
       this.$put("/player",params).then(response=>{
         if(response.data.success){

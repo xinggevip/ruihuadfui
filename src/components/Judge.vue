@@ -86,6 +86,8 @@ export default {
       // 通过 actions 属性来定义菜单选项
       actions: [{ text: '选项一' }, { text: '选项二' }, { text: '选项三' }],
       show:false,
+      timer: null,  // 定时器名称,
+      localActVersion:0
 
     }
   },
@@ -93,6 +95,24 @@ export default {
     // this.doctor.dId = this.$route.params.dId;
     // 获取医生
     this.fetchData();
+  },
+  mounted(){
+    this.timer = setInterval(() => {
+        // 某些操作
+        // console.log("访问活动版本");
+        this.$get("/activate/" + this.$route.params.actid).then(response=>{
+          console.log("活动版本",response.data.data.numone);
+          if(this.localActVersion != response.data.data.numone){
+            console.log("版本不一致");
+            this.localActVersion = response.data.data.numone;
+            this.fetchData();
+          }
+        }).catch(err=>{
+
+        }).finally(()=>{
+
+        })
+    }, 5000)
   },
   methods:{
     onSelect(item) {
@@ -183,6 +203,12 @@ export default {
         if(response.data.success){
             this.title = "评委 - " + response.data.data.title;
             this.profile = response.data.data.profile;
+            if(response.data.data.id === 0){
+              console.log("活动未开始，跳转到首页");
+            }
+            if(response.data.data.id === -1){
+              console.log("活动已结束，跳转到成绩页面");
+            }
         }
       }).catch(err=>{
 
@@ -290,6 +316,11 @@ export default {
 
 
 
+  },
+  beforeDestroy(){
+    this.$once('hook:beforeDestroy', () => {            
+        clearInterval(this.timer);                                    
+    })
   }
 }
 </script>
