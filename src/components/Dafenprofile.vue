@@ -19,6 +19,17 @@
         </div>
       </div>
 
+      <van-cell-group>
+        <van-field
+          disabled
+          rows="2"
+          autosize
+          type="textarea"
+          maxlength="50"
+          show-word-limit
+          v-model="pingyuItems[0].str_value" :label="pingyuItems[0].item_name" placeholder="请输入评语" />
+      </van-cell-group>
+
       <van-button disabled @click="submit" plain  round type="info" style="width:100%;margin-top:30px;">提交</van-button>
       
       
@@ -52,6 +63,7 @@ export default {
       title:"加载中...",
       player:null,
       scoreItems:[],
+      pingyuItems:[],
       value:0,
       manfen:0,
       currentScore:0,
@@ -94,13 +106,25 @@ export default {
         judgeid:judgeid
       };
       this.$postQs("/scorevalue/getYiDaScoreValue",params).then(response=>{
-        this.scoreItems = response.data.data;
+        // this.scoreItems = response.data.data;
         this.manfen = 0;
+
+        this.scoreItems = response.data.data.filter((item,index,arr)=>{
+          return item.score_type === 1
+        })
+
+        this.pingyuItems = response.data.data.filter((item,index,arr)=>{
+          return item.score_type === 2
+        })
+
         this.scoreItems.forEach((item,index,arr)=>{
           this.manfen = this.manfen + item.max_score;
           this.currentScore = this.currentScore + item.num_value;
         })
-        console.log(this.scoreItems);
+
+        console.log("response",response.data.data);
+        console.log("scoreItems",this.scoreItems);
+        console.log("pingyuItems",this.pingyuItems);
       }).catch(err=>{
 
       }).finally(()=>{

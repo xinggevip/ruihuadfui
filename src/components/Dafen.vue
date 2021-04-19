@@ -19,6 +19,16 @@
         </div>
       </div>
 
+      <van-cell-group>
+        <van-field
+          rows="2"
+          autosize
+          type="textarea"
+          maxlength="50"
+          show-word-limit
+          v-model="pingyuItems[0].value" :label="pingyuItems[0].itemName" placeholder="请输入评语" />
+      </van-cell-group>
+
       <van-button @click="submit" plain  round type="info" style="width:100%;margin-top:30px;">提交</van-button>
       
       
@@ -52,6 +62,7 @@ export default {
       title:"加载中...",
       player:null,
       scoreItems:[],
+      pingyuItems:[],
       value:0,
       manfen:0,
       currentScore:0,
@@ -89,12 +100,22 @@ export default {
         actid:actid
       };
       this.$postQs("/step/currentScoreList",params).then(response=>{
-        this.scoreItems = response.data.data;
+        // this.scoreItems = response.data.data;
+        this.scoreItems = response.data.data.filter((item,index,arr)=>{
+          return item.scoreType === 1
+        })
+
+        this.pingyuItems = response.data.data.filter((item,index,arr)=>{
+          return item.scoreType === 2
+        })
+
         this.manfen = 0;
         this.scoreItems.forEach((item,index,arr)=>{
           this.manfen = this.manfen + item.maxScore;
         })
-        console.log(this.scoreItems);
+        console.log("response",response.data.data);
+        console.log("scoreItems",this.scoreItems);
+        console.log("pingyuItems",this.pingyuItems);
       }).catch(err=>{
 
       }).finally(()=>{
@@ -129,33 +150,56 @@ export default {
     submit(){
       // alert("提交")
       // 拷贝一份数组
-      this.$toast.loading({
+      let message = "您给该选手的总评分为："+this.currentScore+"分\n" + "是否提交？"
+      this.$dialog.confirm({
+        title: '提示',
+          message: message,
+        })
+        .then(() => {
+          this.$toast.loading({
             message: '加载中...',
             forbidClick: true,
           });
-      let params = this.scoreItems.map((item,index,arr)=>{
-        let res = {
-          scoreitemId:item.id,
-          judgeId:this.$route.params.judgeid,
-          playerId:this.$route.params.playerid,
-          numValue:item.value
-        }
-        return res;
-      });
+          let params1 = this.scoreItems.map((item,index,arr)=>{
+            let res = {
+              scoreitemId:item.id,
+              judgeId:this.$route.params.judgeid,
+              playerId:this.$route.params.playerid,
+              numValue:item.value
+            }
+            return res;
+          });
 
-      // console.log(params);
+          let parame2 = this.pingyuItems.map((item,index,arr)=>{
+            let res = {
+              scoreitemId:item.id,
+              judgeId:this.$route.params.judgeid,
+              playerId:this.$route.params.playerid,
+              strValue:item.value
+            }
+            return res;
+          });
 
-      this.$post("/scorevalue/dafen",params).then(response=>{
-        if(response.data.success){
-          this.$message.success("提交成功")
-        }
-      }).catch(err=>{
+          let params = params1.concat(parame2);
 
-      }).finally(()=>{
-        this.$toast.clear();
-      })
+          // console.log(params);
 
-   
+          this.$post("/scorevalue/dafen",params).then(response=>{
+            if(response.data.success){
+              this.$message.success("提交成功")
+            }
+          }).catch(err=>{
+
+          }).finally(()=>{
+            this.$toast.clear();
+          })
+        })
+        .catch(() => {
+          // on cancel
+        })
+      
+
+
 
     }
 
