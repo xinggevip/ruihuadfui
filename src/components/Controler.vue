@@ -36,7 +36,16 @@
             <van-button v-if="item.strone !== '1'" type="info" disabled  size="small" style="position:absolute;right:0px;top: 50%;transform:translateY(-50%);">上台</van-button>
           </div>
         </van-tab>
+        <van-tab title="批量设置">
+        <van-row type="flex" justify="center">
+          <van-col span="20">
+              <van-button @click="updateAllPlayersStatus('on')"  plain hairline round type="info" style="width:100%;margin-top:15px;">所有人上台</van-button>
+              <van-button @click="updateAllPlayersStatus('down')"  plain hairline round type="info" style="width:100%;margin-top:15px;">所有人下台</van-button>
+            </van-col>
+          </van-row>
+        </van-tab>
       </van-tabs>
+      
     </div>
 
 
@@ -226,6 +235,41 @@ export default {
       }).finally(()=>{
         this.loading = false;
       })
+    },
+    updateAllPlayersStatus(status){
+      let message = ""
+      if(status == "on"){
+        message = "确定设置所有人上台？"
+      }
+      if(status == "down"){
+        message = "确定将所有人下台？"
+      }
+      this.$dialog.confirm({
+        title: '提示',
+          message: message,
+        })
+        .then(() => {
+          // on confirm
+          this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
+          let params = {
+            actid:this.$route.params.actid,
+            status: status,
+          }
+          this.$postQs("/player/updateAllPlayersStatus", params).then(response=>{
+            console.log(response);
+          }).catch(err=>{
+
+          }).finally(()=>{
+            this.$toast.clear();
+          })
+        })
+        .catch(() => {
+          // on cancel
+        })
+      
     },
     onClick(name, title) {
       // this.$toast(title);
