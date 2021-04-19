@@ -32,9 +32,6 @@
     <div class="father">
       <van-tabs @click="onClick">
         <van-tab title="可打分">
-          <div v-if="kedaList.length === 0">
-            <h3>加载中...</h3>
-          </div>
           <div class="playerItem" v-for="(item,index) in kedaList" :key="item.index">
             <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b></p>
             <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>
@@ -43,9 +40,6 @@
           </div>
         </van-tab>
         <van-tab title="已打分">
-          <div v-if="kedaList.length === 0">
-            <h3>加载中...</h3>
-          </div>
           <div class="playerItem" v-for="(item,index) in yidaList" :key="item.index">
             <p style="margin:5px 0px 0px"><b>{{index+1}}.{{item.name}}</b>&nbsp;&nbsp;&nbsp;<b>{{item.sum_score}}分</b></p>
             <p style="margin:5px 0px;">{{item.company}}&nbsp;{{item.dep}}&nbsp;</p>

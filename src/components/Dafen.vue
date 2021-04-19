@@ -129,6 +129,10 @@ export default {
     submit(){
       // alert("提交")
       // 拷贝一份数组
+      this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
       let params = this.scoreItems.map((item,index,arr)=>{
         let res = {
           scoreitemId:item.id,
@@ -142,11 +146,13 @@ export default {
       // console.log(params);
 
       this.$post("/scorevalue/dafen",params).then(response=>{
-        console.log(response);
+        if(response.data.success){
+          this.$message.success("提交成功")
+        }
       }).catch(err=>{
 
       }).finally(()=>{
-
+        this.$toast.clear();
       })
 
    
