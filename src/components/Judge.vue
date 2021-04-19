@@ -276,6 +276,18 @@ export default {
         }
       });
     },
+    goDafenProfile(item){
+      console.log("goDafenProfile的item",item);
+      this.$router.push({
+        name:'dafenprofile',
+        params:{
+          actid:this.$route.params.actid,
+          judgeid:item.judge_id,
+          playerid:item.player_id,
+          stepid:item.step_id
+        }
+      })
+    },
 
     // 返回
     onClickLeft(){

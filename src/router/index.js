@@ -20,6 +20,7 @@ import Player from '../components/Player.vue'
 import Judge from '../components/Judge.vue'
 import Controler from '../components/Controler.vue'
 import Dafen from '../components/Dafen.vue'
+import Dafenprofile from '../components/Dafenprofile.vue'
 
 
 Vue.use(VueRouter)
@@ -83,6 +84,11 @@ const routes = [
         path:'/activate/:actid/judge/:judgeid/player/:playerid',
         name:'dafen',
         component:Dafen
+      },
+      {
+        path:'/activate/:actid/judge/:judgeid/player/:playerid/dafenprofile/stepid/:stepid',
+        name:'dafenprofile',
+        component:Dafenprofile
       },
       {
         path:'/activate/:actid/cntroler/:controlerid',

@@ -13,13 +13,13 @@
       <p><b>您给出的分数为：</b><span style="font-size:22px">{{currentScore}}</span><span style="color:#ccc;font-size:14px">&nbsp;&nbsp;&nbsp;(满分为{{manfen}})</span></p>
         <div class="numCount-father">
           <div class="numCount" v-for="(item,index) in scoreItems" :key="index">
-          <span class="numCount-title">{{index + 1}}. {{item.itemName}}</span>
-          <span class="numcount-tip">(最高{{item.maxScore}}分)</span>
-          <van-stepper @change="onChange" :default-value="0" v-model="scoreItems[index].value" :step="Math.round(item.maxScore / 10)" input-width="60px" button-size="32px"  min="0" :max="item.maxScore" />
+          <span class="numCount-title">{{index + 1}}. {{item.item_name}}</span>
+          <span class="numcount-tip">(最高{{item.max_score}}分)</span>
+          <van-stepper disabled @change="onChange" :default-value="0" v-model="scoreItems[index].num_value" :step="Math.round(item.max_score / 10)" input-width="60px" button-size="32px"  min="0" :max="item.max_score" />
         </div>
       </div>
 
-      <van-button @click="submit" plain  round type="info" style="width:100%;margin-top:30px;">提交</van-button>
+      <van-button disabled @click="submit" plain  round type="info" style="width:100%;margin-top:30px;">提交</van-button>
       
       
     </div>
@@ -85,14 +85,20 @@ export default {
     },
     getCurrentStepScoreItemList(){
       let actid = this.$route.params.actid;
+      let playerid = this.$route.params.playerid;
+      let stepid = this.$route.params.stepid;
+      let judgeid = this.$route.params.judgeid;
       let params = {
-        actid:actid
+        playerid:playerid,
+        stepid:stepid,
+        judgeid:judgeid
       };
-      this.$postQs("/step/currentScoreList",params).then(response=>{
+      this.$postQs("/scorevalue/getYiDaScoreValue",params).then(response=>{
         this.scoreItems = response.data.data;
         this.manfen = 0;
         this.scoreItems.forEach((item,index,arr)=>{
-          this.manfen = this.manfen + item.maxScore;
+          this.manfen = this.manfen + item.max_score;
+          this.currentScore = this.currentScore + item.num_value;
         })
         console.log(this.scoreItems);
       }).catch(err=>{
@@ -105,8 +111,7 @@ export default {
       let params = {
         id:this.$route.params.actid
       }
-      this.$postQs("/step/currentStep",params).then(response=>{
-        console.log(response);
+      this.$get("/step/" + this.$route.params.stepid).then(response=>{
         if(response.data.success){
             this.stepName = response.data.data.title;
         }
