@@ -56,6 +56,10 @@
             <van-button square text="删除" type="danger" class="delete-button" />
           </template>
         </van-swipe-cell>
+
+        <div class="add-step">
+          <van-button @click="addStep" round type="info" style="width:100%;margin-top:15%;" >添加环节</van-button>
+        </div>
     </div>
 
     <div v-if="active == 2">
@@ -65,9 +69,7 @@
     <div v-if="active == 3">
         3
     </div>
-    <div class="add-step">
-      <van-button @click="addStep" round type="info" style="width:100%;margin-top:15%;" >添加环节</van-button>
-    </div>
+    
     
 
     <div class="btn-father">
