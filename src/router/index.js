@@ -21,6 +21,7 @@ import Judge from '../components/Judge.vue'
 import Controler from '../components/Controler.vue'
 import Dafen from '../components/Dafen.vue'
 import Dafenprofile from '../components/Dafenprofile.vue'
+import Createact from '../components/Createact.vue'
 
 
 Vue.use(VueRouter)
@@ -152,6 +153,11 @@ const routes = [
       requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
     }
   },
+  {
+    path:'/user/:userid/createact/',
+    name:'createact',
+    component:Createact
+  }
 ]
 
 const router = new VueRouter({

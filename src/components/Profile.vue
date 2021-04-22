@@ -20,7 +20,7 @@
       </div>
 
       <van-grid>
-        <van-grid-item icon="orders-o" text="创建活动" to="/order" />
+        <van-grid-item icon="orders-o" text="创建活动" :to="'/user/' + user.id + '/createact/'" />
         <van-grid-item icon="notes-o" text="使用文档" to="/report" />
         <van-grid-item icon="contact" text="我的资料" to="/editprofile" />
         <van-grid-item icon="photo-o" text="帮助反馈" @click="duihua()" />
