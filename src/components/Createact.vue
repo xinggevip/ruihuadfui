@@ -2,7 +2,7 @@
   <div class="dafen">
     <van-nav-bar
       :title="headtitle"
-      left-text="关闭"
+      left-text="返回"
       left-arrow
       @click-left="onClickLeft"
     />
@@ -15,39 +15,70 @@
     </van-steps>
 
     <div v-if="active == 0">
-      <van-cell-group>
+      <van-form @submit="onSubmit">
         <van-field
-          v-model="actobj.title" 
-          required 
-          :error-message="errtitle"
-          label="活动标题" 
-          placeholder="请输入活动标题" 
+          v-model="actobj.title"
+          name="活动标题"
+          label="活动标题"
+          placeholder="请输入活动标题"
+          :rules="[{ required: true, message: '' }]"
         />
         <van-field
-          required
-          :error-message="errprofile"
           v-model="actobj.profile"
           rows="2"
-          autosize
-          label="活动介绍"
           type="textarea"
-          maxlength="50"
+          name="活动介绍"
+          label="活动介绍"
           placeholder="请输入活动介绍"
-          show-word-limit
-       />
-        <van-cell  title="选择开始时间" is-link  :value="date" @click="show = true" />
-        <van-calendar v-model="show" :max-range="365"  :formatter="formatter" @confirm="onConfirm" />
-      </van-cell-group>
+          :rules="[{ required: true, message: '' }]"
+        />
+        <van-field
+          readonly
+          clickable
+          name="开始日期"
+          :value="date"
+          label="开始日期"
+          placeholder="点击选择日期"
+          @click="showCalendar = true"
+          :rules="[{ required: true, message: '' }]"
+        />
+        <van-field
+          readonly
+          clickable
+          name="开始时间"
+          :value="time"
+          label="开始时间"
+          placeholder="点击选择时间"
+          @click="showPicker = true"
+          :rules="[{ required: true, message: '' }]"
+        />
+        <div class="btn-father">
+          <van-button native-type="submit" plain  round type="info" style="width:100%;margin-top:30px;">下一步</van-button>
+        </div>
+        
+
+
+      </van-form>
+
+      <van-calendar v-model="showCalendar" :max-range="365"  :formatter="formatter" @confirm="onConfirm" />
+      <van-popup v-model="showPicker" position="bottom">
+        <van-datetime-picker
+          type="time"
+          @confirm="onConfirmTime"
+          @cancel="showPicker = false"
+        />
+      </van-popup>
+
     </div>
 
     <div v-if="active == 1">
-        <van-swipe-cell>
-          <div class="step-list-father">
+        <van-swipe-cell  v-for="(item,index) in stepList" :key="index">
+          <div class="step-list-father"  >
             <p class="step-title">
-              标题
+              {{index + 1}}.&nbsp;&nbsp;{{item.title}}
           </p>
           <span class="step-profile">
-              ddd
+              {{item.profile}}
           </span>
           </div>
           
@@ -74,18 +105,18 @@
 
     <div class="btn-father">
       <van-button v-if="active != 0"  @click="pre" plain  round type="info" style="width:100%;margin-top:30px;">上一步</van-button>
-      <van-button v-if="active != 3" @click="next" plain  round type="info" style="width:100%;margin-top:30px;">下一步</van-button>
+      <van-button v-if="active != 3 && active != 0" @click="next" plain  round type="info" style="width:100%;margin-top:30px;">下一步</van-button>
     </div>
     
     <!--  -->
-    <van-dialog v-model="stepshow" :title="steptitle" show-cancel-button>
+    <van-dialog v-model="stepshow" :title="steptitle" :beforeClose="beforeClose" show-cancel-button>
       <van-form>
         <van-field
           v-model="currentStep.title"
           name="环节标题"
           label="环节标题"
           placeholder="请输入环节标题"
-          :rules="[{ required: true, message: '环节标题不能为空' }]"
+          :rules="[{ required: true, message: '' }]"
         />
         <van-field
           v-model="currentStep.profile"
@@ -94,7 +125,7 @@
           name="环节介绍"
           label="环节介绍"
           placeholder="请输入环节介绍"
-          :rules="[{ required: true, message: '环节介绍不能为空' }]"
+          :rules="[{ required: true, message: '' }]"
         />
       </van-form>
     </van-dialog>
@@ -121,9 +152,11 @@ export default {
   data(){
     return {
       
-      active: 1,
+      active: 0,
       date: '',
-      show: false,
+      showCalendar: false,// 日期
+      showPicker:false,   // 时间
+      time:'',
       headtitle:'创建活动',
       errtitle:'',
       errprofile:'',
@@ -137,12 +170,13 @@ export default {
         profile:""
       },
       actobj:{
-        id:5,
+        id:null,
         title:'',
         profile:'',
         startDate: null,
         strone:'0',
         strtwo:'1',
+        userId:(JSON.parse(this.$store.state.user)).id,
       },
       stepList:[]
 
@@ -159,6 +193,27 @@ export default {
   methods:{
 
     fetchData(){
+      
+    },
+    
+    getStepList(){
+
+      let params = {
+        actid:this.actobj.id,
+      }
+      this.$postQs("/step/steplist",params).then(response=>{
+        console.log(response);
+        if(response.data.success != true){
+          return ;
+        }
+        this.stepList = response.data.data;
+
+
+      }).catch(err=>{
+
+      }).finally(()=>{
+
+      })
     },
     onClickLeft(){
       window.history.back(-1);
@@ -167,10 +222,15 @@ export default {
       return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     },
     onConfirm(date) {
-      this.show = false;
-      this.actobj.startDate = date;
+      // console.log(date);
+      this.showCalendar = false;
+      // this.actobj.startDate = date;
       this.date = this.formatDate(date);
 
+    },
+    onConfirmTime(time) {
+      this.time = time;
+      this.showPicker = false;
     },
     formatter(date){
 
@@ -180,42 +240,36 @@ export default {
       this.active = this.active - 1;
     },
     next(){
-      if(this.active == 0){
-        this.createAct();
+      if(this.active == 1){
+
       }
       
     },
-    createAct(){
-      // 验证
-      // 提交
+    onSubmit(){
+
+
       console.log(this.actobj);
-      let num = 1;
-      if(this.actobj.title === ""){
-        this.errtitle = "活动标题不能为空"
-        num = 2
-      };
 
-      if(this.actobj.profile === ""){
-        this.errprofile = "活动介绍不能为空"
-        num = 2
-      }
+      let riqiarr = this.date.split('/').map((item,index,arr)=>{
+        return parseInt(item);
+      })
 
-      if(this.actobj.startDate == null || this.actobj.startDate == ''){
-        this.date = "日期不能为空"
-        num = 2
-      }
+      let timearr = this.time.split(':').map((item,index,arr)=>{
+        return parseInt(item);
+      })
 
-      if(this.actobj.title != ""){
-        this.errtitle = ""
-      };
+      let date = new Date();
+      date.setFullYear(riqiarr[0]);
+      date.setMonth(riqiarr[1] - 1);
+      date.setDate(riqiarr[2]);
+      date.setHours(timearr[0]);
+      date.setMinutes(timearr[1]);
+      date.setSeconds(0);
+      console.log(date);
+      // console.log(date.getMilliseconds());
+      console.log(this.$dateUtil.mToDateStr(date.getTime(),'yyyy-MM-dd hh:mm:ss'));
 
-      if(this.actobj.profile != ""){
-        this.errprofile = ""
-      }
-
-      if(num === 2){
-        return;
-      }
+      this.actobj.startDate = date.getTime();
 
       this.$toast.loading({
             message: '加载中...',
@@ -228,6 +282,7 @@ export default {
         this.actobj.startDate = new Date(this.actobj.startDate);
         if(response.data.success){
           this.active = 1;
+          this.getStepList();
         }
       }).catch(err=>{
 
@@ -237,6 +292,34 @@ export default {
     },
     addStep(){
       this.stepshow = true
+    },
+    beforeClose(action, done){
+      console.log("关闭前");
+      if (action === 'confirm') {
+        this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
+        if(this.currentStep.id == null){
+          this.steptitle = "添加环节";
+          this.currentStep.activateId = this.actobj.id;
+          this.$post("/step",this.currentStep).then(response=>{
+            console.log(response);
+            this.stepList.push(response.data.data);
+          }).catch(err=>{
+
+          }).finally(()=>{
+            this.$toast.clear();
+            done();
+          })
+
+        }else{
+          this.steptitle = "编辑环节"
+        }
+
+      } else {
+        done();
+      }
     }
 
 

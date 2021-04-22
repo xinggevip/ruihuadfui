@@ -98,7 +98,12 @@ export default {
       this.$get("/activate", this.pageInfo).then(response => {
           // 响应成功回调
           console.log(response.data);
-          this.listData = response.data.data.records;
+          this.listData = this.listData.concat(response.data.data.records);
+          if(response.data.data.current<response.data.data.pages){
+            this.pageInfo.next = true;
+          }else{
+            this.pageInfo.next = false;
+          }
 
           if(this.listData.length == 0){
             this.showInfo = "无数据"
