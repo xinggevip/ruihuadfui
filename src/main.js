@@ -22,12 +22,13 @@ import { Dialog } from 'vant';
 Vue.use(Dialog);
 
 // 导入封装的axios
-import {get,post,postQs,put} from "./utils/api";
+import {get,post,postQs,put,del} from "./utils/api";
 import {strUtil,arrUtil,dateUtil} from "./utils/utils";
 
 Vue.prototype.$get = get
 Vue.prototype.$post = post
 Vue.prototype.$put = put
+Vue.prototype.$del = del
 
 Vue.prototype.$strUtil = strUtil
 Vue.prototype.$arrUtil = arrUtil
