@@ -98,29 +98,21 @@
         <div class="acttwofather-left">
 
         </div>
-        <van-sidebar v-model="activeKey">
+        <van-sidebar v-model="activeKey" @change="onStepChange">
           <van-sidebar-item v-for="(item,index) in stepList" :key="index" :title="''+(index+1)+'.'+item.title" />
         </van-sidebar>
         <div class="acttwofather-right">
           <div class="score-item" v-for="(item,index) in stepList" :key="index">
             <div class="score-item-son" v-if="index == activeKey">
                 <!-- {{index}} -->
-                <van-swipe-cell  v-for="(item,index) in stepList" :key="index">
-                  <!-- <div class="step-list-father"  >
-                    <p class="step-title">
-                        {{index + 1}}.&nbsp;&nbsp;{{item.title}}
-                    </p>
-                    <span class="step-profile">
-                        {{item.profile}}
-                    </span>
-                  </div> -->
+                <van-swipe-cell  v-for="(scoreItem,scoreIndex) in scoreList" :key="scoreIndex">
                   <div class="score-listfather">
-                    <span><b>邀约理由</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>20分</span>
+                    <span><b>{{scoreItem.itemName}}</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>{{scoreItem.maxScore}}分</span>
                   </div>
                   
                   <template #right>
-                    <van-button @click="editStepItem(item)" square type="primary" text="编辑" />
-                    <van-button @click="deleteStepItem(item)" square text="删除" type="danger" class="delete-button" />
+                    <van-button @click="editScoreItem(scoreItem)" square type="primary" text="编辑" />
+                    <van-button @click="deleteScoreItem(scoreItem)" square text="删除" type="danger" class="delete-button" />
                   </template>
                 </van-swipe-cell>
 
@@ -130,14 +122,16 @@
         </div>
       </div>
       <div class="add-step">
-        <van-button  round type="info" style="width:100%;margin-top:15%;" >添加打分项</van-button>
+        <van-button @click="addScoreItem" round type="info" style="width:100%;margin-top:15%;" >添加打分项</van-button>
       </div>
           
 
     </div>
 
     <div v-if="active == 3">
-        3
+        <div v-for="(item,index) in invitaionList" :key="index">
+          {{item.invitationCode}}
+        </div>
     </div>
     
     
@@ -147,7 +141,7 @@
       <van-button v-if="active != 3 && active != 0" @click="next" plain  round type="info" style="width:100%;margin-top:30px;">下一步</van-button>
     </div>
     
-    <!--  -->
+    <!-- 添加环节对话框 -->
     <van-dialog v-model="stepshow" :title="steptitle" :beforeClose="beforeClose" show-cancel-button>
       <van-form ref="formData" alidate-first @submit="submitOfAddStep">
         <van-field
@@ -164,6 +158,29 @@
           name="环节介绍"
           label="环节介绍"
           placeholder="请输入环节介绍"
+          :rules="[{ required: true, message: '' }]"
+        />
+      </van-form>
+    </van-dialog>
+
+    <!-- 添加打分项对话框 -->
+
+    <van-dialog v-model="scoreshow" :title="scoretitle" :beforeClose="beforeCloseOfAddScoreItem" show-cancel-button>
+      <van-form ref="formDataOfAddScoreItem" alidate-first @submit="submitOfAddScoreItem">
+        <van-field
+          v-model="currentScoreItem.itemName"
+          name="打分名称"
+          label="打分名称"
+          placeholder="请输入打分名称"
+          :rules="[{ required: true, message: '' }]"
+        />
+        <van-field
+          v-model="currentScoreItem.maxScore"
+          rows="2"
+          type="number"
+          name="最高分值"
+          label="最高分值"
+          placeholder="请输入最高分值"
           :rules="[{ required: true, message: '' }]"
         />
       </van-form>
@@ -201,7 +218,9 @@ export default {
       errprofile:'',
       errdate:'',
       stepshow:false,
+      scoreshow:false,
       steptitle:"添加环节",
+      scoretitle:"添加打分项",
       currentStep:{
         id:null,
         activateId:null,
@@ -215,9 +234,20 @@ export default {
         startDate: null,
         strone:'0',
         strtwo:'1',
+        numone:0,
         userId:(JSON.parse(this.$store.state.user)).id,
       },
-      stepList:[]
+      stepList:[],
+      scoreList:[],
+      currentScoreItem:{
+        id:null,
+        stepId:null,
+        itemName:null,
+        maxScore:null,
+        scoreType:1,
+
+      },
+      invitaionList:[],
 
     }
   },
@@ -291,18 +321,76 @@ export default {
           id:this.actobj.id,
           strtwo:"2"
         }
-        this.$post("/activate",params).then(response=>{
+        this.$put("/activate",params).then(response=>{
           if(response.data.success){
+            // 根据环节id获取打分列表
             this.active = this.active + 1;
+            this.getScoreItemByStepId();
           }
         }).catch(err=>{
 
         }).finally(()=>{
           this.$toast.clear();
         })
+      }else if(this.active == 2){
+        this.$toast.loading({
+          message: '加载中...',
+          forbidClick: true,
+        });
+        let params = {
+          id:this.actobj.id,
+          strtwo:"3"
+        }
+        this.$put("/activate",params).then(response=>{
+          console.log("下一步",response);
+          if(response.data.success){
+            // 根据环节id获取打分列表
+            this.active = this.active + 1;
+            // 获取选手、评委、场控验证码
+            this.$get("/invitation/getInvitationsByActId/" + this.actobj.id).then(response=>{
+              console.log(response);
+              this.invitaionList = response.data.data;
+            }).catch(err=>{
+
+            }).finally(()=>{
+
+            })
+          }
+        }).catch(err=>{
+
+        }).finally(()=>{
+          this.$toast.clear();
+        })
+
       }
       
     },
+    getScoreItemByStepId(){
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+      });
+      let params = {
+        stepId:this.stepList[this.activeKey].id
+      }
+      this.$postQs("/scoreitem/onlyGetScoreItems",params).then(response=>{
+        console.log(response);
+        if(response == null){
+          this.scoreList = [];
+        }
+        this.scoreList = response.data.data.filter((item,index,arr)=>{
+          return item.scoreType === 1
+        })
+      }).catch(err=>{
+        this.scoreList = [];
+      }).finally(()=>{
+        this.$toast.clear();
+      })
+    },
+    onStepChange(index){
+      this.getScoreItemByStepId();
+    },
+
     onSubmit(){
 
 
@@ -366,8 +454,52 @@ export default {
       }else{
         this.steptitle = "编辑环节"
       }
-
     },
+
+    addScoreItem(){
+      this.scoreshow = true;
+      this.currentScoreItem = {};
+      if(this.currentScoreItem.id == null){
+        this.scoretitle = "添加";
+      }else{
+        this.steptitle = "编辑"
+      }
+    },
+    editScoreItem(item){
+      this.scoreshow = true;
+      this.currentScoreItem = {...item};
+      if(this.currentScoreItem.id == null){
+        this.scoretitle = "添加";
+      }else{
+        this.scoretitle = "编辑"
+      }
+    },
+    beforeCloseOfAddScoreItem(action, done){
+      if (action === 'confirm') {
+        this.$refs.formDataOfAddScoreItem.submit();
+        done();
+      } else {
+        done();
+      }
+    },
+    submitOfAddScoreItem(){
+      this.currentScoreItem.stepId = this.stepList[this.activeKey].id;
+      this.currentScoreItem.scoreType = 1;
+      this.$post("/scoreitem",this.currentScoreItem).then(response=>{
+        if(response.data.success){
+          this.$message.success(this.scoretitle + "成功");
+          this.getScoreItemByStepId();
+        }
+      }).catch(err=>{
+
+      }).finally(()=>{
+
+      })
+    },
+
+
+
+
     deleteStepItem(item){
 
       this.$dialog.confirm({
@@ -385,6 +517,32 @@ export default {
           }).finally(()=>{
             this.getStepList();
           })
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    deleteScoreItem(item){
+      this.$dialog.confirm({
+        title: '提示',
+        message:  `确定删除"${item.itemName}"这个打分项吗？`,
+      })
+        .then(() => {
+          this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
+          this.$del("/scoreitem/"+item.id).then(response=>{
+            if(response.data.success){
+              this.$message.success("删除成功");
+              this.getScoreItemByStepId();
+            }
+          }).catch(err=>{
+
+          }).finally(()=>{
+            this.$toast.clear();
+          })
+
         })
         .catch(() => {
           // on cancel
