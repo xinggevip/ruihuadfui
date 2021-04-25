@@ -42,7 +42,7 @@
             <mu-sub-header><h3 style="color:#333">热门活动</h3></mu-sub-header>
 
 
-            <Doctors :va="key" :ty="value1" />
+            <Doctors :va="key" :ty="value1" :showType="showType" />
 
         </mu-list>
 
@@ -64,7 +64,8 @@ export default {
     return {
       tianqi:'喜欢做的事不要总说以后， 来日并不方长； 今天的拥抱不要留给明天， 后会可能无期。',
       key:'',
-      value1:0,
+      value1:1,
+      showType:1,// 1首页2草稿、三进行中、四已结束
       // 列表json数组
       
       // 搜索框的值

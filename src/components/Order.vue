@@ -3,34 +3,30 @@
     <!-- <van-pull-refresh v-model="isLoading" @refresh="onRefresh"> -->
       <!-- 头部标题 -->
       <van-nav-bar
-        title="我的挂号单"
-        @click-right="onClickRight"
+        title="活动管理"
       >
         <!-- 右侧搜索 -->
         <!-- <van-icon name="search" slot="right" /> -->
       </van-nav-bar>
       <!-- 标签导航 -->
-      <van-tabs v-model="activeName" swipeable sticky color="#1989fa">
+      <van-tabs v-model="active" swipeable sticky color="#1989fa">
         
+        <van-tab title="草稿">
+        </van-tab>
+
         <van-tab title="进行中">
-          
-          <Orderdan :ty="-1" />
 
         </van-tab>
         <van-tab title="已结束">
-          
-          <Orderdan :ty="5" />
-
-
-
         </van-tab>
-        <!-- <van-tab title="所有订单">
-          
-          <Orderdan :ty="3" />
-
-        </van-tab> -->
 
       </van-tabs>
+
+      <mu-list textline="three-line" style="background-color:white">
+            <Doctors va="" :ty="type" :showType="type" />
+
+        </mu-list>
+
 
 
 
@@ -43,25 +39,43 @@
 </template>
 
 <script>
-import Orderdan from '../components/Orderdan.vue'
+import Doctors from '../components/Doctors.vue'
 export default {
   name: 'Order',
   // props: {
   //   msg: String
   // }
   components: {
-    Orderdan
+    Doctors
   },
   data(){
     return {
       // 默认选中标签
-      activeName: 0,
+      active: 0,
       // 统计刷新次数
       count:0,
       // 是否正在加载
       isLoading: false,
-      allOrderList:[]
+      allOrderList:[],
+      type:2,
       
+    }
+  },
+  watch:{
+    active:function(newValue, oldValue){
+      console.log("当前的活动状态索引为",newValue);
+      // 获取环节列表
+      if(newValue == 0){
+        this.type = 2
+      }
+      // 获取打分项目
+      if(newValue == 1){
+        this.type = 3
+      }
+      // 获取验证码列表
+      if(newValue == 2){
+        this.type = 4
+      }
     }
   },
   created(){
@@ -69,30 +83,6 @@ export default {
   },
   methods:{
 
-    // 取消支付
-    toRevPayWidthNoPay:function(id){
-      alert("取消支付"+id);
-    },
-    toPayWidthNoPay:function(id){
-      alert("去支付"+id);
-    },
-    // 去支付
-    // 点击未支付项目
-    toOrderProFile:function(id){
-      alert("点击了未支付列表"+id);
-    },
-    // 点击搜索
-    onClickRight:function(){
-      alert("点击了搜索");
-    },
-    // 下拉刷新
-    onRefresh() {
-      setTimeout(() => {
-        this.$toast('刷新成功');
-        this.isLoading = false;
-        this.count++;
-      }, 500);
-    }
   }
 }
 </script>

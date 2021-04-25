@@ -4,8 +4,8 @@
     <!-- <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="loading" @load="load" v-if="listData.length > 0"> -->
     <mu-load-more :loading="loading" :refreshing="refreshing" @load="load" v-if="listData.length > 0">
       <div v-for="(item,index) in listData" :key="index">
-          <!-- <mu-list-item avatar :ripple="false" button v-on:click="toYuYue(item.id)"> -->
-          <mu-list-item avatar :ripple="false" button :to="'/activate/' + item.id">
+          <!-- <mu-list-item avatar :ripple="false" button :to="'/activate/' + item.id"> -->
+          <mu-list-item avatar :ripple="false">
               <!-- 列表项目左侧头像 -->
               <!-- <mu-list-item-action>
                 <mu-avatar>
@@ -26,7 +26,10 @@
               <!-- 列表右侧按钮 -->
               <mu-list-item-action >
                 <!-- <mu-list-item-after-text>18hr</mu-list-item-after-text> -->
-                <van-button type="info" size="small">进入</van-button>
+                <van-button @click="goAct(item)" v-if="showType == 1" type="info" size="small">进入</van-button>
+                <van-button @click="editAct(item)" v-if="showType == 2" type="info" size="small">编辑</van-button>
+                <van-button v-if="showType == 3" type="info" size="small">编辑</van-button>
+                <van-button v-if="showType == 4" type="info" size="small">编辑</van-button>
                 <br>
               </mu-list-item-action>
 
@@ -54,7 +57,8 @@ export default {
   },
   props: {
     va: String,
-    ty: Number
+    ty: Number,
+    showType:Number
   },
   data(){
     return {
@@ -69,7 +73,10 @@ export default {
       pageInfo:{
         page:1,
         pageCount:10,
-        next:false
+        next:false,
+        value:this.va,
+        type:this.ty,
+        userid:(JSON.parse(this.$store.state.user)).id
       }
 
 
@@ -77,13 +84,11 @@ export default {
   },
   watch:{
       'va':function(){
-        this.value = this.va;
-        // alert(this.value);
+        this.pageInfo.value = this.va;
         this.refresh();
       },
       'ty':function(){
-        this.type = this.ty;
-        // alert(this.type);
+        this.pageInfo.type = this.ty;
         this.refresh();
       }
   },
@@ -95,9 +100,14 @@ export default {
     fetch(){
       console.log("fetch Data");
       // console.log("/api/doctor/getdoctors?page="+ this.pageInfo.page +"&pageSize="+ this.pageInfo.pageSize +"&dtId="+ this.type.toString() +"&dName="+ this.value);
-      this.$get("/activate", this.pageInfo).then(response => {
+      console.log("pageInfo",this.pageInfo);
+      this.$post("/activate/getActList", this.pageInfo).then(response => {
           // 响应成功回调
           console.log(response.data);
+          // 过滤掉带隐藏属性的活动
+          // let arr = response.data.data.records.filter((item,index,arr)=>{
+          //   return item.strthree == "1"
+          // })
           this.listData = this.listData.concat(response.data.data.records);
           if(response.data.data.current<response.data.data.pages){
             this.pageInfo.next = true;
@@ -158,9 +168,19 @@ export default {
 
     },
     dateFormat(value){
-      return this.$dateUtil.mToDateStr(value,"yyyy-MM-dd")
+      return this.$dateUtil.mToDateStr(value,"yyyy-MM-dd hh:mm")
 
-    }
+    },
+    goAct(item){
+      this.$router.push({name:'activate',params:{actid:item.id}});
+    },
+    editAct(item){
+      this.$router.push({name:'editAct',params:{
+        actid:item.id,
+        userid:(JSON.parse(this.$store.state.user)).id
+        }});
+    },
+    
 
   },
   mounted(){

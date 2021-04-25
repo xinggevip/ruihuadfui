@@ -22,6 +22,7 @@ import Controler from '../components/Controler.vue'
 import Dafen from '../components/Dafen.vue'
 import Dafenprofile from '../components/Dafenprofile.vue'
 import Createact from '../components/Createact.vue'
+import EditAct from '../components/EditAct.vue'
 
 
 Vue.use(VueRouter)
@@ -41,7 +42,10 @@ const routes = [
       {
         path:'/order',
         name:'order',
-        component:Order
+        component:Order,
+        meta:{
+          requireAuth: true  // 添加该字段，表示进入这个路由是需要登录的
+        }
       },
       {
         path:'/report',
@@ -157,6 +161,11 @@ const routes = [
     path:'/user/:userid/createact/',
     name:'createact',
     component:Createact
+  },
+  {
+    path:'/user/:userid/editact/:actid',
+    name:'editAct',
+    component:EditAct
   }
 ]
 

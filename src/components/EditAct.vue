@@ -1,5 +1,5 @@
 <template>
-  <div class="dafen">
+  <div class="editact">
     <van-nav-bar
       :title="headtitle"
       left-text="返回"
@@ -233,7 +233,7 @@ export default {
       showCalendar: false,// 日期
       showPicker:false,   // 时间
       time:'',
-      headtitle:'创建活动',
+      headtitle:'编辑活动',
       errtitle:'',
       errprofile:'',
       errdate:'',
@@ -300,9 +300,25 @@ export default {
   methods:{
 
     fetchData(){
-      // 获取环节列表
-      // this.getStepList();
-      // 获取当前活动
+      // 根据活动id获取进行到了哪个环节
+      this.getActivate();
+    },
+    getActivate(){
+      alert("发请求")
+      this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
+      this.$get("/activate/"+this.$route.params.actid).then(response=>{
+        console.log("activate",response);
+        this.actobj = response.data.data;
+        this.date = this.formatDate(new Date(response.data.data.startDate));
+        this.time = this.$dateUtil.mToDateStr(response.data.data.startDate,'hh:mm')
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.$toast.clear();
+      })
     },
     
     getStepList(){
