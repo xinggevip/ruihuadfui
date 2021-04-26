@@ -14,6 +14,9 @@
         <van-tab title="草稿">
         </van-tab>
 
+        <van-tab title="未开始">
+        </van-tab>
+
         <van-tab title="进行中">
 
         </van-tab>
@@ -23,9 +26,9 @@
       </van-tabs>
 
       <mu-list textline="three-line" style="background-color:white">
-            <Doctors va="" :ty="type" :showType="type" />
+          <Doctors va="" :ty="type" :showType="type" />
 
-        </mu-list>
+      </mu-list>
 
 
 
@@ -64,16 +67,20 @@ export default {
   watch:{
     active:function(newValue, oldValue){
       console.log("当前的活动状态索引为",newValue);
-      // 获取环节列表
+      // 草稿
       if(newValue == 0){
         this.type = 2
       }
-      // 获取打分项目
+      // 未开始
       if(newValue == 1){
+        this.type = 5
+      }
+      // 进行中
+      if(newValue == 2){
         this.type = 3
       }
-      // 获取验证码列表
-      if(newValue == 2){
+      // 已结束
+      if(newValue == 3){
         this.type = 4
       }
     }

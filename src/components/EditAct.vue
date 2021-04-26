@@ -223,7 +223,8 @@ export default {
   components: {
   },
   props: {
-    msg: String
+    msg: String,
+    ty: Number,
   },
   data(){
     return {
@@ -274,6 +275,9 @@ export default {
   watch:{
     active:function(newValue, oldValue){
       console.log("当前的创建活动的步骤索引",newValue);
+      if(newValue == 0){
+        this.getActivate();
+      }
       // 获取环节列表
       if(newValue == 1){
         this.getStepList();
@@ -301,10 +305,10 @@ export default {
 
     fetchData(){
       // 根据活动id获取进行到了哪个环节
-      this.getActivate();
+      this.getActivatetwo();
     },
     getActivate(){
-      alert("发请求")
+      // alert("发请求")
       this.$toast.loading({
             message: '加载中...',
             forbidClick: true,
@@ -314,6 +318,29 @@ export default {
         this.actobj = response.data.data;
         this.date = this.formatDate(new Date(response.data.data.startDate));
         this.time = this.$dateUtil.mToDateStr(response.data.data.startDate,'hh:mm')
+      }).catch(err=>{
+
+      }).finally(()=>{
+        this.$toast.clear();
+      })
+    },
+    getActivatetwo(){
+      // alert("发请求")
+      
+      this.$toast.loading({
+            message: '加载中...',
+            forbidClick: true,
+          });
+      this.$get("/activate/"+this.$route.params.actid).then(response=>{
+        console.log("activate",response);
+        if(response.data.data.strtwo == "-1"){
+          this.active = 3
+        }
+        this.actobj = response.data.data;
+        this.date = this.formatDate(new Date(response.data.data.startDate));
+        this.time = this.$dateUtil.mToDateStr(response.data.data.startDate,'hh:mm')
+        // alert("操")
+        
       }).catch(err=>{
 
       }).finally(()=>{

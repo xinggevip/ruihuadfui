@@ -14,7 +14,7 @@
               </mu-list-item-action> -->
               <!-- 列表项目内容 -->
               <mu-list-item-content>
-                <mu-list-item-title><span style="font-size:16px;font-weight:800;">{{item.title}}</span> <span class="subTitleColor">{{item.strone}}</span> </mu-list-item-title>
+                <mu-list-item-title><span style="font-size:16px;font-weight:800;">{{item.title}}</span> <span class="subTitleColor">{{item.status}}</span> </mu-list-item-title>
                 <mu-list-item-sub-title>
                   <span style="color: rgba(0, 0, 0, .87)">描述：</span> <span class="subTitleColor">{{item.profile}}</span> 
                   <br>
@@ -26,10 +26,13 @@
               <!-- 列表右侧按钮 -->
               <mu-list-item-action >
                 <!-- <mu-list-item-after-text>18hr</mu-list-item-after-text> -->
-                <van-button @click="goAct(item)" v-if="showType == 1" type="info" size="small">进入</van-button>
+                <van-button @click="goAct(item)" v-if="showType == 1 && item.status == '进行中'" type="info" size="small">进入</van-button>
+                <van-button @click="goAct(item)" v-if="showType == 1 && item.status == '未开始'" type="info" size="small">进入</van-button>
+                <van-button  v-if="showType == 1 && item.status == '已结束'" type="info" size="small">查看</van-button>
                 <van-button @click="editAct(item)" v-if="showType == 2" type="info" size="small">编辑</van-button>
-                <van-button v-if="showType == 3" type="info" size="small">编辑</van-button>
-                <van-button v-if="showType == 4" type="info" size="small">编辑</van-button>
+                <van-button @click="editAct(item)" v-if="showType == 3" type="info" size="small">编辑</van-button>
+                <van-button @click="editAct(item)" disabled v-if="showType == 4" type="info" size="small">编辑</van-button>
+                <van-button @click="editAct(item)" v-if="showType == 5" type="info" size="small">编辑</van-button>
                 <br>
               </mu-list-item-action>
 
@@ -58,7 +61,8 @@ export default {
   props: {
     va: String,
     ty: Number,
-    showType:Number
+    showType:Number,
+    change:Number
   },
   data(){
     return {
@@ -76,7 +80,7 @@ export default {
         next:false,
         value:this.va,
         type:this.ty,
-        userid:(JSON.parse(this.$store.state.user)).id
+        userid:null
       }
 
 
@@ -90,6 +94,9 @@ export default {
       'ty':function(){
         this.pageInfo.type = this.ty;
         this.refresh();
+      },
+      'change':function(){
+        this.refresh();
       }
   },
   created(){
@@ -101,6 +108,9 @@ export default {
       console.log("fetch Data");
       // console.log("/api/doctor/getdoctors?page="+ this.pageInfo.page +"&pageSize="+ this.pageInfo.pageSize +"&dtId="+ this.type.toString() +"&dName="+ this.value);
       console.log("pageInfo",this.pageInfo);
+      if(this.$store.state.token){
+        this.pageInfo.userid = (JSON.parse(this.$store.state.user)).id
+      }
       this.$post("/activate/getActList", this.pageInfo).then(response => {
           // 响应成功回调
           console.log(response.data);
@@ -121,11 +131,11 @@ export default {
 
           this.listData = this.listData.map((item,index,arr)=>{
             if(item.strone === "0"){
-              item.strone = "未开始"
+              item.status = "未开始"
             }else if(item.strone === "-1"){
-              item.strone = "已结束"
+              item.status = "已结束"
             }else {
-              item.strone = "进行中"
+              item.status = "进行中"
             }
 
             return item;

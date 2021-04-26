@@ -1,5 +1,6 @@
 <template>
   <div class="hello ">
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <!-- 搜索框 -->
     <!-- <van-search placeholder="请输入搜索关键词" @search="onSearch" v-model="value" /> -->
     <!-- 轮播图 -->
@@ -42,10 +43,10 @@
             <mu-sub-header><h3 style="color:#333">热门活动</h3></mu-sub-header>
 
 
-            <Doctors :va="key" :ty="value1" :showType="showType" />
+            <Doctors :va="key" :ty="value1" :showType="showType" :change="change" />
 
         </mu-list>
-
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -85,6 +86,8 @@ export default {
         // "https://www.qiangssvip.com/usr/uploads/2020/04/2146004560.png"
         
       ],
+      change:0,
+      isLoading:false
 
     }
   },
@@ -93,6 +96,14 @@ export default {
   },
   methods:{
     
+    onRefresh(){
+      this.change = this.change + 1
+      this.isLoading = true
+      setTimeout(()=>{
+        this.isLoading = false
+      },500)
+    },
+
     // 找疾病
     toDisease(){
       this.$router.push("/disease");
