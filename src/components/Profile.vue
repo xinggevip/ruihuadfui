@@ -26,11 +26,8 @@
         <van-grid-item icon="photo-o" text="帮助反馈" @click="duihua()" />
       </van-grid>
 
-      <van-cell title="单元格" is-link value="内容" />
-      <van-cell title="单元格" is-link value="内容" />
-      <van-cell title="单元格" is-link value="内容" />
-      <van-cell title="单元格" is-link value="内容" />
-      <van-cell title="单元格" is-link value="内容" />
+      <van-cell @click="about" title="关于" is-link value="" />
+      <van-cell @click="caidan" title="版本" is-link value="V1.0" />
       <van-cell title="退出登录" @click="logout" is-link value="" />
       
     </van-pull-refresh>
@@ -49,6 +46,7 @@ export default {
       count: 0,
       isLoading: false,
       user:JSON.parse(this.$store.state.user),
+      caidanNum:0
     }
   },
 
@@ -62,7 +60,7 @@ export default {
     },
     doc(){
       this.$dialog.alert({
-        message: '待开发'
+        message: '待做页面'
       });
     },
     // 退出登录
@@ -81,6 +79,26 @@ export default {
         this.user = JSON.parse(this.$store.state.user)
         this.count++;
       }, 500);
+    },
+    caidan(){
+      this.caidanNum = this.caidanNum + 1;
+      if(this.caidanNum > 11){
+        this.$toast({
+          message: "你的世界怎么没有我",
+          position: 'bottom',
+        });
+      }else if(this.caidanNum > 5){
+        let res = 12 - this.caidanNum;
+        this.$toast({
+          message: "还剩" + res + "下",
+          position: 'bottom',
+        });
+      }
+    },
+    about(){
+      this.$dialog.alert({
+        message: '待做页面'
+      });
     }
   }
 }
