@@ -91,6 +91,7 @@ export default {
 
       this.loading = true;
       let params = {
+        "actid":this.$route.params.actid,
         "invitationCode":this.invitationCode,
         "name":this.name
       }
