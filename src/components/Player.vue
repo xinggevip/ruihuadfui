@@ -1,11 +1,7 @@
 <template>
   <div class="player">
 
-    <h1>选手</h1>
-    <p>环节列表：</p>
-    <ul>
-      <li v-for="(item,index) in items" :key="index">{{item}}</li>
-    </ul>
+    <h1>选手页面待做</h1>
 
   
 

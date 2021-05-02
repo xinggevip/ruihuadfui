@@ -84,7 +84,7 @@ export default {
       this.caidanNum = this.caidanNum + 1;
       if(this.caidanNum > 11){
         this.$toast({
-          message: "你的世界怎么没有我",
+          message: "你的世界怎能没有我",
           position: 'bottom',
         });
       }else if(this.caidanNum > 5){

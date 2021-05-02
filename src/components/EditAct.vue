@@ -288,6 +288,7 @@ export default {
       }
       // 获取验证码列表
       if(newValue == 3){
+        this.getStepList();
         this.getInvitaionList();
       }
     }
