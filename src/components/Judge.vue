@@ -74,7 +74,6 @@ export default {
     return {
       loading:false,
       data:[],
-      actions: [{ name: '环节一' }, { name: '环节二' }, { name: '环节三' }],
       invitationCode:"",
       name:"",
       searchKey:"",
@@ -203,10 +202,12 @@ export default {
         if(response.data.success){
             this.title = "评委 - " + response.data.data.title;
             this.profile = response.data.data.profile;
-            if(response.data.data.id === 0){
+            if(response.data.data.strone === "0"){
+              this.$message.success("活动未开始")
               console.log("活动未开始，跳转到首页");
             }
-            if(response.data.data.id === -1){
+            if(response.data.data.id === "-1"){
+              this.$message.success("活动已结束")
               console.log("活动已结束，跳转到成绩页面");
             }
         }
