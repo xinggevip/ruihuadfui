@@ -112,6 +112,11 @@ export default {
             this.$router.push({name:'controler',params:{actid:this.$route.params.actid,controlerid:userid}});
           }else{
             this.$message.error("未知异常");
+            // if (response.data.data.strone == "0") {
+            //   this.$message.error("活动未开始")
+            // }else if (response.data.data.strone == "-1") {
+            //   this.$message.error("活动已结束")
+            // }
           }
           //  this.$router.push({path:'/',query:{dId:this.id}});
         }

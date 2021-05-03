@@ -10,7 +10,7 @@
 
     <div class="father">
       <p>活动详情：</p>
-      <p>{{activateProfile}}</p>
+      <p class="tmd">{{activateProfile}}</p>
     </div>
     
     <van-cell is-link :title="currentStepTitle" @click="show = true" value="选择当前环节"/>
@@ -169,6 +169,7 @@ export default {
           id: -1,
           name: "已结束"
         })
+        console.log(neweList);
         this.actions = neweList;
 
       }).catch(err=>{
@@ -223,7 +224,7 @@ export default {
         if(!response.data.success){
           return ;
         }
-        console.log(response.data.data.records);
+        console.log("/player/getPlayers",response.data.data.records);
         this.listData = response.data.data.records;
         this.listDataOn = response.data.data.records.filter((item,index,arr)=>{
           return item.strone == '1';
@@ -312,6 +313,12 @@ export default {
 }
 </script>
 <style scoped lang="less">
+.tmd{
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+}
 .playerItem{
   border-bottom: 1px solid #ccc;
   position: relative;

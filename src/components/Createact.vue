@@ -277,6 +277,7 @@ export default {
       // 获取环节列表
       if(newValue == 1){
         this.getStepList();
+        this.getAct();
       }
       // 获取打分项目
       if(newValue == 2){
@@ -304,7 +305,16 @@ export default {
       // this.getStepList();
       // 获取当前活动
     },
-    
+    getAct(){
+      this.$get("/activate/" + this.actobj.id).then(response=>{
+        console.log("获取活动对象",response);
+        this.actobj = response.data.data;
+      }).catch(err=>{
+
+      }).finally(()=>{
+
+      })
+    },
     getStepList(){
 
       let params = {

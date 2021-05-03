@@ -28,7 +28,7 @@
                 <!-- <mu-list-item-after-text>18hr</mu-list-item-after-text> -->
                 <van-button @click="goAct(item)" v-if="showType == 1 && item.status == '进行中'" type="info" size="small">进入</van-button>
                 <van-button @click="goAct(item)" v-if="showType == 1 && item.status == '未开始'" type="info" size="small">进入</van-button>
-                <van-button  v-if="showType == 1 && item.status == '已结束'" type="info" size="small">查看</van-button>
+                <van-button @click="lookScoreRes(item)" v-if="showType == 1 && item.status == '已结束'" type="info" size="small">查看</van-button>
                 <van-button @click="editAct(item)" v-if="showType == 2" type="info" size="small">编辑</van-button>
                 <van-button @click="editAct(item)" v-if="showType == 3" type="info" size="small">编辑</van-button>
                 <van-button @click="editAct(item)" disabled v-if="showType == 4" type="info" size="small">编辑</van-button>
@@ -103,6 +103,11 @@ export default {
     this.fetch();
   },
   methods:{
+    lookScoreRes(item){
+      this.$dialog.alert({
+          message: '移动端查看成绩结果页面正在开发中'
+      });
+    },
     // 获取数据
     fetch(){
       console.log("fetch Data");

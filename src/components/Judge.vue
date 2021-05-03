@@ -24,7 +24,7 @@
         <li v-for="(item,index) in items" :key="index">{{item}} <span style="color:red;" v-if="index == 2">&nbsp;&nbsp;&nbsp;&nbsp;☜当前环节</span></li>
       </ul> -->
       <p><b>详情:</b></p>
-      <p>{{profile}}</p>
+      <p class="tmd">{{profile}}</p>
       
     </div>
     
@@ -330,6 +330,12 @@ export default {
   // padding: 20px;
   // box-sizing: border-box;
 
+}
+.tmd{
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .playerItem{
